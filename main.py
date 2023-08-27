@@ -1,14 +1,34 @@
 from tkinter import *
 from random import randint
+import time
 
 def new_list():
+    global L
     L = [randint(20, 200) for _ in range(NB_BARRES)]
     for i in range(NB_BARRES):
         canvas.coords(L_rect[i], 20+i*15, 250-L[i], 30+i*15, 250)
+    selection_sort_button.config(state="normal")
 
-def first_algorithm():
-    first_algorithm_button.config(state='disabled')
-    pass
+def change_speed():
+    global speed
+    if speed == 1:
+        speed = 2
+    elif speed == 2:
+        speed = 4
+    else :
+        speed = 1
+    speed_button.config(text=f"Speed X{speed}")
+    
+
+def selection_sort():
+    selection_sort_button.config(state='disabled')
+    for i in range (NB_BARRES):
+        m=i
+        for k in range (i, NB_BARRES):
+            if L[k]<=L[m]:
+                m=k
+        swap(i,m)
+    
 
 def swap(a, b):
     if a<0:
@@ -22,11 +42,15 @@ def swap(a, b):
     canvas.move(L_rect[M],-d*15, 0)
     L[a], L[b] = L[b], L[a]
     L_rect[a], L_rect[b] = L_rect[b], L_rect[a]
+    time.sleep(0.2/speed)
+    window.update()
+    window.update_idletasks()
 
 
-NB_BARRES = 50
+NB_BARRES = 49
 
-window = Tk()   
+window = Tk()
+speed = 1   
 
 window.geometry(f"{15*NB_BARRES+35}x600")
 window.title("Sorting Algorithms")
@@ -43,11 +67,14 @@ left_frame.pack(side="left",expand=True, fill="both")
 right_frame = Frame(frame, bg="yellow")
 right_frame.pack(side="left",expand=True, fill="both")
 
-first_algorithm_button = Button(left_frame, text="First algorithm", font=('Helvetica 20'), command=first_algorithm)
-first_algorithm_button.pack(side=TOP, fill="x")
+selection_sort_button = Button(left_frame, text="Tri par sélection", font=('Helvetica 20'), command=selection_sort)
+selection_sort_button.pack(side=TOP, fill="x")
 
-new_list_button = Button(right_frame, text="New list", font=('Helvetica 20'), command=lambda : swap(0,1))
+new_list_button = Button(right_frame, text="New list", font=('Helvetica 20'), command=new_list)
 new_list_button.pack(side=TOP, fill='x')
+
+speed_button = Button(right_frame, text="Speed X1", font=('Helvetica 20'), command=change_speed)
+speed_button.pack(fill="x")
 
 L = [randint(20, 200) for _ in range(NB_BARRES)]
 L_rect = []
