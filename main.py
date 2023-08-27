@@ -23,7 +23,7 @@ def change_speed():
 def selection_sort():
     selection_sort_button.config(state='disabled')
     for i in range (NB_BARRES):
-        m=i
+        m=0
         for k in range (i, NB_BARRES):
             if L[k]<=L[m]:
                 m=k
