@@ -80,7 +80,6 @@ class App(Window):
 
     def new_list(self):
         utils.is_next_list_pressed = True
-        utils.is_list_sorted = False
         self.progress_bar['value'] = 0
         self.label.config(text="0%")
         self.time_left.config(text = "Time left : ")
@@ -94,8 +93,6 @@ class App(Window):
 
     
     def call_fonction_de_tri(self, fonction_de_tri):
-        if utils.is_list_sorted:
-            return
         if self.paused:
             utils.event.clear()
         utils.is_next_list_pressed = False
@@ -107,7 +104,6 @@ class App(Window):
         fonction_de_tri(self.L[:], 0, NB_BARRES)
         if not variable:
             event.clear()
-        utils.is_list_sorted = False
         self.progress_bar.config(maximum=utils.nb_swaps)
         self.progress_bar['value'] = 0
         utils.nb_swaps = 0
