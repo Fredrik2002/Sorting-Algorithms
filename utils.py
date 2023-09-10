@@ -10,9 +10,6 @@ nb_swaps = 0
 event = threading.Event()
 event.set()
 
-def compte_swaps(*args):
-    global nb_swaps
-    nb_swaps+=1
 
 def swap_and_count(a, b, M):
     global nb_swaps
@@ -20,7 +17,8 @@ def swap_and_count(a, b, M):
     M[a], M[b] = M[b], M[a]
     
 
-def selection_sort(L, *args, swap=compte_swaps):
+
+def selection_sort(L, *args, swap=swap_and_count):
     global is_next_list_pressed
     for i in range (NB_BARRES):
         event.wait()
@@ -33,7 +31,7 @@ def selection_sort(L, *args, swap=compte_swaps):
                 m=k
         if is_next_list_pressed:
             is_next_list_pressed = False
-        swap(i,m)
+        swap(i,m, L)
     
 
 
