@@ -5,7 +5,6 @@ HAUTEUR_BARRES = 275
 
 speed = 1
 is_next_list_pressed = False
-is_list_sorted = False
 nb_swaps = 0  
 
 
@@ -16,7 +15,7 @@ def swap_and_count(a, b, M):
     
 
 def selection_sort(L, *args, swap=swap_and_count):
-    global is_next_list_pressed, is_list_sorted
+    global is_next_list_pressed
     for i in range (NB_BARRES):
         if is_next_list_pressed:
             is_next_list_pressed = False
@@ -26,12 +25,12 @@ def selection_sort(L, *args, swap=swap_and_count):
             if L[k]<=L[m]:
                 m=k
         swap(i,m, L)
-    is_list_sorted = True
     
 
 
 def bubble_sort(L, *args, swap=swap_and_count):
-    global is_next_list_pressed, is_list_sorted
+    global is_next_list_pressed
+    is_list_sorted = False
     while not is_list_sorted:
         for i in range (NB_BARRES-1): 
             if is_next_list_pressed:
@@ -47,7 +46,8 @@ def bubble_sort(L, *args, swap=swap_and_count):
 
 
 def cocktail(L, *args, swap=swap_and_count):
-    global is_next_list_pressed, is_list_sorted
+    global is_next_list_pressed
+    is_list_sorted = False
     while not is_list_sorted:
         for i in range (0, NB_BARRES-1): 
             if is_next_list_pressed:
@@ -69,7 +69,7 @@ def cocktail(L, *args, swap=swap_and_count):
 
 
 def merge(L, a, middle, b, swap=swap_and_count):
-    global is_next_list_pressed, is_list_sorted
+    global is_next_list_pressed
     left, right = L[a:middle], L[middle:b] 
     P = []
     while len(left)!=0 and len(right)!=0:
@@ -87,11 +87,10 @@ def merge(L, a, middle, b, swap=swap_and_count):
             return True
         mon_index = L.index(P[i], a+i, b)
         swap(a+i, mon_index, L)
-    is_list_sorted = True
 
     
 def merge_sort(L, a, b, swap=swap_and_count):
-    global is_next_list_pressed, is_list_sorted
+    global is_next_list_pressed
     if is_next_list_pressed:
         is_next_list_pressed = False
         return True 
@@ -108,13 +107,13 @@ def merge_sort(L, a, b, swap=swap_and_count):
         return True
     if merge(L, a , middle, b, swap):
         return True
-    is_list_sorted = True
 
 def insertion(L, *args, swap=swap_and_count):
-    global is_list_sorted
     for i in range(NB_BARRES):
         for k in range(i-1, -1, -1):
+            if is_next_list_pressed:
+                is_next_list_pressed = False
+                return True
             if L[i]<L[k]:
                 swap(i, k, L)
                 i=k
-    is_list_sorted = True
