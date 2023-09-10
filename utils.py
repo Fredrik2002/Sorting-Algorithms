@@ -25,7 +25,7 @@ def selection_sort(L, *args, swap=swap_and_count):
         for k in range (i, NB_BARRES):
             if L[k]<=L[m]:
                 m=k
-        swap(i,m)
+        swap(i,m, L)
     is_list_sorted = True
     
 
