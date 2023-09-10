@@ -10,8 +10,6 @@ class App(Window):
     def __init__(self):
         super().__init__(scaling=2, themename='superhero')
 
-        self.paused = False
-
         self.geometry(f"{15*NB_BARRES+35}x650")
         self.title("Sorting Algorithms")
 
@@ -88,13 +86,11 @@ class App(Window):
             self.canvas.coords(self.L_rect[i], 20+i*15, POSITION_BARRES-self.L[i], 30+i*15, POSITION_BARRES)
         for button in self.left_frame.winfo_children():
             button.config(state='normal')
-        self.paused = not utils.event.is_set()
         utils.event.set()
+        self.pause.config(text = "Pause")
 
     
     def call_fonction_de_tri(self, fonction_de_tri):
-        if self.paused:
-            utils.event.clear()
         utils.is_next_list_pressed = False
         for button in self.left_frame.winfo_children():
             button.config(state='disabled')
@@ -160,6 +156,7 @@ class App(Window):
         if utils.is_next_list_pressed:
             self.progress_bar['value'] = 0
             self.label.config(text="0%")
+            self.time_left.config(text = "Time left : ")
         self.update()
         self.update_idletasks()
 
