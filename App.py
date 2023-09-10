@@ -157,10 +157,13 @@ class App(Window):
         self.L[a], self.L[b] = self.L[b], self.L[a]
         self.L_rect[a], self.L_rect[b] = self.L_rect[b], self.L_rect[a]
         time.sleep(0.2/speed)
-        self.progress_bar['value'] += 1
         utils.nb_swaps+=1
+        self.progress_bar['value'] += 1
         self.time_left.config(text=f"Time left : {round(0.2*1.1/speed*(self.progress_bar.cget('maximum')-utils.nb_swaps),1)}s")
         self.label.config(text=f"{int(utils.nb_swaps*100/self.progress_bar.cget('maximum'))}%") 
+        if utils.is_next_list_pressed:
+            self.progress_bar['value'] = 0
+            self.label.config(text="0%")
         self.update()
         self.update_idletasks()
 

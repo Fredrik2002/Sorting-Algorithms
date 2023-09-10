@@ -27,7 +27,6 @@ def selection_sort(L, *args, swap=compte_swaps):
         event.wait()
         if is_next_list_pressed:
             is_next_list_pressed = False
-            print("hello")
             return 
         m=i
         for k in range (i, NB_BARRES):
