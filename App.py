@@ -1,7 +1,7 @@
-from ttkbootstrap.widgets import Progressbar, Label, Checkbutton
-from ttkbootstrap import Window, Canvas, Button, Frame
+from ttkbootstrap import Window, Canvas, Button, Frame, Progressbar, Label, Checkbutton
 from tkinter import N, NW, TOP, IntVar
 from utils import *
+import utils
 from random import randint
 import time
 
@@ -16,7 +16,7 @@ class App(Window):
         self.canvas.place(anchor=NW, relx=0.0, rely=0.0, relheight=0.5, relwidth=1.0)
 
         self.progress_bar = Progressbar(self, bootstyle="success-striped")
-        self.progress_bar.place(anchor=N, relx=0.5, y=5, relwidth=0.5, height=10)
+        self.progress_bar.place(anchor=N, relx=0.5, y=10, relwidth=0.5, height=10)
 
         self.label = Label(self, bootstyle="success", font=("Helvetica 12 bold"), text="0%")
         self.label.place(anchor=NW, relx=0.76, y=0)
@@ -71,16 +71,15 @@ class App(Window):
         self.L_rect = []
         for i in range(NB_BARRES):
            self.L_rect.append(self.canvas.create_rectangle(20+i*15, POSITION_BARRES-self.L[i], 30+i*15, POSITION_BARRES, fill='orange'))
-        self.mainloop()
+
 
     def new_list(self):
-        global L, is_next_list_pressed, is_list_sorted
-        is_next_list_pressed = True
-        is_list_sorted = False
+        utils.is_next_list_pressed = True
+        utils.is_list_sorted = False
         self.progress_bar['value'] = 0
         self.label.config(text="0%")
         self.time_left.config(text = "Time left : ")
-        L = [randint(20, HAUTEUR_BARRES) for _ in range(NB_BARRES)]
+        self.L = [randint(20, HAUTEUR_BARRES) for _ in range(NB_BARRES)]
         for i in range(NB_BARRES):
             self.canvas.coords(self.L_rect[i], 20+i*15, POSITION_BARRES-self.L[i], 30+i*15, POSITION_BARRES)
         for button in self.left_frame.winfo_children():
@@ -88,27 +87,23 @@ class App(Window):
 
     
     def call_fonction_de_tri(self, fonction_de_tri):
-        global is_next_list_pressed, nb_swaps, is_list_sorted
-        if is_list_sorted:
+        if utils.is_list_sorted:
             return
-        is_next_list_pressed = False
+        utils.is_next_list_pressed = False
         for button in self.left_frame.winfo_children():
             button.config(state='disabled')
-        nb_swaps = 0
+        utils.nb_swaps = 0
         fonction_de_tri(self.L[:], 0, NB_BARRES)
-        is_list_sorted = False
-        self.progress_bar.config(maximum=nb_swaps)
+        utils.is_list_sorted = False
+        self.progress_bar.config(maximum=utils.nb_swaps)
         self.progress_bar['value'] = 0
-        nb_swaps = 0
+        utils.nb_swaps = 0
         fonction_de_tri(self.L, 0, NB_BARRES, swap=self.swap)
-        for button in self.left_frame.winfo_children():
-            button.config(state='normal')
     
-
 
     def gestion_progress_bar(self):
         if self.checkvar.get() == 1:
-            self.progress_bar.place(anchor=N, relx=0.5, y=5, relwidth=0.5, height=10)
+            self.progress_bar.place(anchor=N, relx=0.5, y=10, relwidth=0.5, height=10)
             self.label.place(anchor=NW, relx=0.76, y=0)
         else:
             self.progress_bar.place_forget()
@@ -133,7 +128,9 @@ class App(Window):
 
 
     def swap(self, a, b, *args):
-        global nb_swaps
+        if utils.is_next_list_pressed:
+            utils.is_next_list_pressed = False
+            return
         if a<0:
             a+=NB_BARRES
         if b<0:
@@ -147,11 +144,11 @@ class App(Window):
         self.L_rect[a], self.L_rect[b] = self.L_rect[b], self.L_rect[a]
         time.sleep(0.2/speed)
         self.progress_bar['value'] += 1
-        nb_swaps+=1
-        self.time_left.config(text=f"Time left : {round(0.2*1.1/speed*(self.progress_bar.cget('maximum')-nb_swaps),1)}s")
-        self.label.config(text=f"{int(nb_swaps*100/self.progress_bar.cget('maximum'))}%") 
+        utils.nb_swaps+=1
+        self.time_left.config(text=f"Time left : {round(0.2*1.1/speed*(self.progress_bar.cget('maximum')-utils.nb_swaps),1)}s")
+        self.label.config(text=f"{int(utils.nb_swaps*100/self.progress_bar.cget('maximum'))}%") 
         self.update()
         self.update_idletasks()
 
-App()
+App().mainloop()
         

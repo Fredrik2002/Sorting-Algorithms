@@ -3,6 +3,11 @@ NB_BARRES = 50
 POSITION_BARRES = 320
 HAUTEUR_BARRES = 275
 
+speed = 1
+is_next_list_pressed = False
+is_list_sorted = False
+nb_swaps = 0  
+
 def compte_swaps(*args):
     global nb_swaps
     nb_swaps+=1
