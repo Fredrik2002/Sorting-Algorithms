@@ -5,9 +5,12 @@ import utils
 from random import randint
 import time
 
+
 class App(Window):
     def __init__(self):
         super().__init__(scaling=2, themename='superhero')
+
+        self.paused = False
 
         self.geometry(f"{15*NB_BARRES+35}x650")
         self.title("Sorting Algorithms")
@@ -58,6 +61,8 @@ class App(Window):
         self.speed_button = Button(self.right_frame, text="Speed X1", takefocus=False,command=self.change_speed)
         self.speed_button.pack(fill="x", padx=5, pady=5)
 
+        self.pause = Button(self.right_frame, text="Pause", takefocus=False,command=self.pause_func)
+        self.pause.pack(fill="x", padx=5, pady=5)
 
         self.checkvar = IntVar()
         self.checkbutton = Checkbutton(self.option_frame,text="Progress Bar", command=self.gestion_progress_bar, variable=self.checkvar, style="success.Roundtoggle.Toolbutton")
@@ -84,21 +89,30 @@ class App(Window):
             self.canvas.coords(self.L_rect[i], 20+i*15, POSITION_BARRES-self.L[i], 30+i*15, POSITION_BARRES)
         for button in self.left_frame.winfo_children():
             button.config(state='normal')
+        self.paused = not utils.event.is_set()
+        utils.event.set()
 
     
     def call_fonction_de_tri(self, fonction_de_tri):
         if utils.is_list_sorted:
             return
+        if self.paused:
+            utils.event.clear()
         utils.is_next_list_pressed = False
         for button in self.left_frame.winfo_children():
             button.config(state='disabled')
         utils.nb_swaps = 0
+        variable = utils.event.is_set()
+        event.set()
         fonction_de_tri(self.L[:], 0, NB_BARRES)
+        if not variable:
+            event.clear()
         utils.is_list_sorted = False
         self.progress_bar.config(maximum=utils.nb_swaps)
         self.progress_bar['value'] = 0
         utils.nb_swaps = 0
-        fonction_de_tri(self.L, 0, NB_BARRES, swap=self.swap)
+        t = threading.Thread(target=fonction_de_tri, args=(self.L, 0, NB_BARRES), kwargs={'swap':self.swap})
+        t.start()
     
 
     def gestion_progress_bar(self):
@@ -149,6 +163,16 @@ class App(Window):
         self.label.config(text=f"{int(utils.nb_swaps*100/self.progress_bar.cget('maximum'))}%") 
         self.update()
         self.update_idletasks()
+
+
+    def pause_func(self):
+        if utils.event.is_set():
+            utils.event.clear()
+            self.pause.config(text = "Resume")
+        else:
+            utils.event.set()
+            self.pause.config(text = "Pause")
+
 
 App().mainloop()
         
