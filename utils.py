@@ -8,9 +8,6 @@ is_next_list_pressed = False
 is_list_sorted = False
 nb_swaps = 0  
 
-def compte_swaps(*args):
-    global nb_swaps
-    nb_swaps+=1
 
 def swap_and_count(a, b, M):
     global nb_swaps
@@ -18,7 +15,7 @@ def swap_and_count(a, b, M):
     M[a], M[b] = M[b], M[a]
     
 
-def selection_sort(L, *args, swap=compte_swaps):
+def selection_sort(L, *args, swap=swap_and_count):
     global is_next_list_pressed, is_list_sorted
     for i in range (NB_BARRES):
         if is_next_list_pressed:
